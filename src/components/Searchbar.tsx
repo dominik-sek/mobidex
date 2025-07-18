@@ -1,6 +1,6 @@
 export const Searchbar = () => {
     return (
-        <form className="flex items-center p-2">
+        <div className="flex items-center p-2 border">
             <label htmlFor='pokemon-search-input' className='w-auto ml-2'>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className=""
                      viewBox="0 0 16 16">
@@ -11,9 +11,9 @@ export const Searchbar = () => {
 
             <div className="h-6 border-l border-slate-200 mx-2"></div>
 
-            <input id="pokemon-search-input" type="search" defaultValue="" placeholder="Search for pokemon..."  className="w-full"/>
+            <input className="h-10 w-full md:w-2/3" id="pokemon-search-input" type="search" defaultValue="" placeholder="Search for pokemon..."  />
 
-        </form>
+        </div>
 
     )
 }

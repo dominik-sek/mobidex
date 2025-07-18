@@ -2,13 +2,11 @@ import {Wrapper} from "./components/Wrapper.tsx";
 import {PokemonList} from "./components/PokemonList.tsx";
 
 function App() {
-    return(
+    return (
         <Wrapper>
             <h2>Minidex</h2>
-            <PokemonList>
-
-            </PokemonList>
-        </Wrapper>
+            <PokemonList /> 
+            </Wrapper>
     )
 }
 

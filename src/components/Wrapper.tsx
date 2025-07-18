@@ -6,7 +6,7 @@ interface WrapperProps {
 
 export const Wrapper = (props: WrapperProps) =>{
     return (
-        <div className="bg-slate-600 slate  text-slate-300 w-screen h-screen flex flex-col items-center justify-center font-poppins p-6 gap-2">
+        <div className="bg-slate-300 mx-auto max-w-6xl h-screen flex flex-col items-center justify-center font-poppins px-6 gap-2">
             {props.children}
         </div>
     )
