@@ -4,11 +4,15 @@ interface ListItemProps {
         id: number;
     }
 }
+import { useNavigate } from 'react-router';
 export const ListItem = (props: ListItemProps) => {
+    
+    const navigate = useNavigate();
+    const handleClick = () => {
+        navigate(`/pokemon/${props.pokemon.id}`);
+    }
     return (
-        <div className=" min-h-24 p-2 flex items-center capitalize" onClick={() => {
-            console.log(`Clicked on ${props.pokemon.id}`);
-        }}>
+        <div className=" min-h-24 p-2 flex items-center capitalize" onClick={handleClick}>
             <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/refs/heads/master/sprites/pokemon/${props.pokemon.id}.png`} />
             <h3 className="text-xl font-bold">{props.pokemon.name}</h3>
             <span className="ml-2 text-gray-500">#{props.pokemon.id}</span>
