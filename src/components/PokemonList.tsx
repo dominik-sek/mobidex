@@ -16,13 +16,19 @@ export const PokemonList = (props: PokemonListProps) =>{
             method: 'GET',
         }).then(async (res) => {
             let response = await res.json()
-
+            console.log(response)
             setPokemonList(response)
 
         })
 
-    },[])
-    console.log()
+    }, [])
+    
+    if (!pokemonList.results) {
+        return <div>Loading...</div>
+    }
+    else {
+        
+    
     return(
         <div className="flex flex-col justify-between w-full h-3/4 gap-2 border border-amber-200 divide-y-1">
             <div className='max-h-1/6 '>
@@ -58,4 +64,5 @@ export const PokemonList = (props: PokemonListProps) =>{
             </div>
         </div>
     )
+    }
 }
