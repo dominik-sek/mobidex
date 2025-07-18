@@ -1,8 +1,14 @@
+import {Wrapper} from "./components/Wrapper.tsx";
+import {PokemonList} from "./components/PokemonList.tsx";
+
 function App() {
     return(
-        <div className="bg-slate-600 slate text-3xl text-slate-300 w-screen h-screen flex flex-col items-center justify-center font-poppins">
-                Hello tailwind!
-        </div>
+        <Wrapper>
+            <h2>Minidex</h2>
+            <PokemonList>
+
+            </PokemonList>
+        </Wrapper>
     )
 }
 
