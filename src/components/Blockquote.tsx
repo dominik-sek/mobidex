@@ -4,8 +4,8 @@ interface BlockquoteProps {
 }
 export const Blockquote = (props: BlockquoteProps) => {
   return (
-    <div style={{ backgroundColor: props.color}} className={` p-4 rounded-md shadow-md backdrop-blur-2xl`}>
-      <p className='text-gray-600 text-xl '>{props.children}</p>
+    <div style={{ backgroundColor: props.color}} className={` text-center p-4 `}>
+      <p className='text-gray-500 text-xl '>{props.children}</p>
     </div>
   )
 }
