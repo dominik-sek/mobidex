@@ -16,20 +16,22 @@ export const fetchAllPokemon = ():Promise<Pokemon> => {
     });
 }
 
-export const fetchPokemonDetailsById = async (id: string): Promise<{details: PokemonDetails, species: PokemonSpecies, evolutionChain: PokemonEvolutionChain}> => {
-  const [pokemonDetails, pokemonSpeciesDetails, evolutionChain] = await Promise.all([
+export const fetchPokemonDetailsById = async (id: string): Promise<{details: PokemonDetails, species: PokemonSpecies}> => {
+  const [pokemonDetails, pokemonSpeciesDetails] = await Promise.all([
     apiClient.get<PokemonDetails>(`/pokemon/${id}`),
     apiClient.get<PokemonSpecies>(`/pokemon-species/${id}`),
-    apiClient.get<PokemonEvolutionChain>(`/evolution-chain/${id}`)
   ]);
   
   return {
     details: pokemonDetails,
     species: pokemonSpeciesDetails,
-    evolutionChain: evolutionChain
   }
 };
 
+export const fetchPokemonEvolutionChainById = async (id: string): Promise<PokemonEvolutionChain> => {
+  return apiClient.get<PokemonEvolutionChain>(`/evolution-chain/${id}`)
+
+};
 export const fetchPokemonSpeciesById = async (id: string): Promise<PokemonSpecies> => {
   return apiClient.get<PokemonSpecies>(`/pokemon-species/${id}`)
 }

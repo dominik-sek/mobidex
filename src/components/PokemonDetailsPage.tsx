@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { fetchPokemonDetailsById } from '../api';
+import { fetchPokemonDetailsById, fetchPokemonEvolutionChainById } from '../api';
 import { Wrapper } from './Wrapper';
 import type { PokemonDetails } from '../types/pokemon-details';
 import type { PokemonSpecies } from '../types/pokemon-species';
@@ -44,18 +44,33 @@ export const PokemonDetailsPage = () => {
 
   const params = useParams<{ id?: string; name?: string; }>();
   const pokemonSpriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${params.id}.svg`;
-  const [pokemonDetails, setPokemonDetails] = useState<{ details: PokemonDetails, species: PokemonSpecies, evolutionChain: PokemonEvolutionChain }>();
+  const [pokemonDetails, setPokemonDetails] = useState<{ details: PokemonDetails, species: PokemonSpecies; }>();
+  const [evolutionChain, setEvolutionChain] = useState<PokemonEvolutionChain>();
   useEffect(() => {
     if (params.id) {
       fetchPokemonDetailsById(params.id)
-        .then(({ details, species, evolutionChain }) => {
-          setPokemonDetails({ details, species, evolutionChain });
+        .then(({ details, species }) => {
+          setPokemonDetails({ details, species });
         })
         .catch(error => {
           console.error('Error fetching Pokemon details:', error);
         });
     }
   }, [params.id]);
+
+  useEffect(() => {
+    if (pokemonDetails) {
+      console.log(pokemonDetails.species.evolution_chain.url.split('/').slice(-2)[0]);
+      fetchPokemonEvolutionChainById(pokemonDetails.species.evolution_chain.url.split('/').slice(-2)[0])
+        .then(chain => {
+          setEvolutionChain(chain);
+          console.log(chain)
+        })
+        .catch(error => {
+          console.error('Error fetching evolution chain:', error);
+        });
+    }
+  }, [pokemonDetails])
   
   const calculateMinMaxStatValueAt100 = (statName: string): { min: number; max: number} => {
     /*
@@ -193,20 +208,18 @@ export const PokemonDetailsPage = () => {
       </div>
 
       <div>
-        {pokemonDetails?.evolutionChain.chain && (
+        {evolutionChain?.chain && (
           <>
             <h3 className="text-2xl font-bold mb-4">Evolution Chain</h3>
             
-              <div>
-              {pokemonDetails.evolutionChain.chain.evolves_to.map((evolution) => (
+              <div className='flex flex-col items-center justify-center'>
+              {evolutionChain.chain.evolves_to.map((evolution) => (
                 <div key={evolution.species.name} className="mb-2">
                   <Card pokemon={{ name: evolution.species.name, id: evolution.species.url.split('/').slice(-2)[0] }} />
                   {evolution.evolves_to.length > 0 && (
-                    <div>
-                      <span className="text-gray-500">
-                        <svg className="inline-block w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M12 2L2 7.5V16.5L12 22L22 16.5V7.5L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
+                    <div className='flex flex-col items-center justify-center gap-2'>
+                      <span className="text-gray-500 my-2 mx-2">
+                        <svg height="48" width="48" style={{rotate:'180deg'}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="m26.71 10.29-10-10a1 1 0 0 0-1.41 0l-10 10 1.41 1.41L15 3.41V32h2V3.41l8.29 8.29z"/></svg>
                       </span>
                       {evolution.evolves_to.map((subEvolution) => (
                         <Card key={subEvolution.species.name} pokemon={{ name: subEvolution.species.name, id: subEvolution.species.url.split('/').slice(-2)[0] }} />
