@@ -4,10 +4,9 @@ import './index.css'
 import App from './App.tsx'
 import {
   createBrowserRouter,
-  Router,
   RouterProvider,
 } from "react-router";
-import { PokemonDetails } from './components/PokemonDetails.tsx';
+import { PokemonDetailsPage } from './components/PokemonDetailsPage.tsx';
 
 const router = createBrowserRouter([
   {
@@ -16,7 +15,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/pokemon/:id",
-    element: <PokemonDetails />,
+    element: <PokemonDetailsPage />,
   },
   {
     path: "/pokemon/:name",

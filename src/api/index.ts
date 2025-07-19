@@ -14,11 +14,14 @@ export const fetchAllPokemon = ():Promise<Pokemon> => {
     });
 }
 
-export const fetchPokemonDetailsById = async (id: string): Promise<[PokemonDetails, PokemonSpecies]> => {
+export const fetchPokemonDetailsById = async (id: string): Promise<{details: PokemonDetails, species: PokemonSpecies}> => {
   const [pokemonDetails, pokemonSpeciesDetails] = await Promise.all([
     apiClient.get<PokemonDetails>(`/pokemon/${id}`),
     apiClient.get<PokemonSpecies>(`/pokemon-species/${id}`)
   ]);
   
-  return [pokemonDetails, pokemonSpeciesDetails];
+  return {
+    details: pokemonDetails,
+    species: pokemonSpeciesDetails
+  }
 };
