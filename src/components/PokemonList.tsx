@@ -24,7 +24,14 @@ export const PokemonList = (props: PokemonListProps) =>{
         );
         console.log(fileteredPokemon);
     };
-    console.log(searchQuery)
+    
+    const onPageChange = (page: number) => {
+        setCurrentPage(page);
+    };
+    const hasNextPage = () => {
+        
+        return (currentPage * maxResults) < (startedTyping ? fileteredPokemon.length : pokemonList.results.length);
+    };
 
     useEffect(() => {
 
@@ -63,16 +70,12 @@ export const PokemonList = (props: PokemonListProps) =>{
                         <Card key={index} pokemon={{name: pokemon.name, id: pokemon.url.split('/')[6]}} />
                     ))
                     
-                        
                 }
             </div>
 
-            <div className='max-h-1/6 flex w-full items-center'>
-            <p className="text-sm text-gray-500">Total Pokemon: {pokemonList.count}</p>
-                    <p className="text-sm text-gray-500">Showing {pokemonList.results.length} Pokemon</p>
+            <div className='max-h-1/6 flex items-center justify-center w-full border'>
 
-                <Pagination />
-                                    <p className="text-sm text-gray-500">Page 1 of {Math.ceil(pokemonList.count / 20)}</p>
+                <Pagination currentPage={currentPage} onPageChange={onPageChange} hasNext={hasNextPage()}  />
 
             </div>
         </div>
