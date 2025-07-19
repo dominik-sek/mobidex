@@ -48,18 +48,23 @@ export const PokemonList = (props: PokemonListProps) =>{
     }, [])
     
     if (!pokemonList.results) {
-        return <div>Loading...</div>
+        return (
+            <div className="flex flex-col items-center justify-center h-screen">
+                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/25.gif" alt="Loading..." className="w-24 h-24 " />
+                Loading...
+            </div>
+        )
     }
     else {
         
     
     return(
-        <div className="flex flex-col justify-around w-full h-4/5 gap-2">
-            <div className='max-h-1/6 '>
+        <div className="flex flex-col justify-around w-full h-full gap-2">
+            <div className='min-h-12'>
                 <Searchbar onChange={handleSearchChange} />
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 2xl:grid-cols-6 overflow-auto gap-2">
+            <div className="h-fit grid grid-cols-2 md:grid-cols-4 2xl:grid-cols-6 overflow-y-auto p-2 gap-2">
                 {
                     (startedTyping ? fileteredPokemon : pokemonList.results)?.length === 0 ? (
                         <div className="col-span-full text-center text-gray-500 divide-y-0">
@@ -74,7 +79,7 @@ export const PokemonList = (props: PokemonListProps) =>{
                 }
             </div>
 
-            <div className='max-h-1/6 flex items-center justify-center w-full '>
+            <div className='min-h-12 flex items-center justify-center w-full '>
                 <Pagination
                     currentPage={currentPage}
                     onPageChange={onPageChange}

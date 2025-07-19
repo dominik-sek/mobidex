@@ -9,7 +9,7 @@ interface PaginationProps {
 }
 
 export const Pagination = (props: PaginationProps) => {
-  console.log(props.currentPage, props.pageCount);
+  
   
   return (
     <nav className="flex items-center gap-x-1" aria-label="Pagination">
