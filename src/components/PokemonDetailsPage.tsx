@@ -1,20 +1,23 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router'
+import { useParams } from 'react-router';
 import { fetchPokemonDetailsById } from '../api';
 import { Wrapper } from './Wrapper';
 import type { PokemonDetails } from '../types/pokemon-details';
 import type { PokemonSpecies } from '../types/pokemon-species';
+import type { PokemonEvolutionChain } from '../types/pokemon-evolution-chain';
 import { Blockquote } from './Blockquote';
+import { StatsTable } from './StatsTable';
+import { Card } from './Card';
 
 
 const statNameMap: Record<string, string> = {
   hp: 'HP',
   attack: 'Attack',
   defense: 'Defense',
-  'special-attack': 'Special Attack',
-  'special-defense': 'Special Defense',
+  'special-attack': 'Sp. Atk',
+  'special-defense': 'Sp. Def',
   speed: 'Speed'
-}
+};
 
 const typeToColorMap: Record<string, string> = {
   normal: 'bg-gray-300',
@@ -39,81 +42,186 @@ const typeToColorMap: Record<string, string> = {
 
 export const PokemonDetailsPage = () => {
 
-  const params = useParams<{ id?: string; name?: string; }>()
-  const pokemonSpriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${params.id}.svg`
-  const [pokemonDetails, setPokemonDetails] = useState<{details: PokemonDetails, species: PokemonSpecies}>()
-  useEffect( () => {
+  const params = useParams<{ id?: string; name?: string; }>();
+  const pokemonSpriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${params.id}.svg`;
+  const [pokemonDetails, setPokemonDetails] = useState<{ details: PokemonDetails, species: PokemonSpecies, evolutionChain: PokemonEvolutionChain }>();
+  useEffect(() => {
     if (params.id) {
       fetchPokemonDetailsById(params.id)
-        .then(({details, species}) => {
-          setPokemonDetails({details, species});
+        .then(({ details, species, evolutionChain }) => {
+          setPokemonDetails({ details, species, evolutionChain });
         })
         .catch(error => {
           console.error('Error fetching Pokemon details:', error);
         });
     }
   }, [params.id]);
-  console.log(pokemonDetails);
+  
+  const calculateMinMaxStatValueAt100 = (statName: string): { min: number; max: number} => {
+    /*
+    max-EV = 31 stat points
+    max-IV = 63 stat points
+    beneficial nature = +10%
+    negative nature = -10%
+
+    non-HP base stat min-max can be calculated from:
+    min: (2 * stat_value+ 5 (static for non-HP stats) ) * negative nature
+    max: (2 * stat_value + max-EV + max-IV + 5) * beneficial nature
+
+    HP min-max:
+    min: 2 * hp_value + 110 (static for HP)
+    max: 2 * hp_value + 110 + max-EV + max-IV
+*/
+    
+    let maxEV = 63; // max EV for a stat
+    let maxIV = 31; // max IV for a stat
+    
+    const baseStat = pokemonDetails?.details.stats.find(stat => stat.stat.name === statName)?.base_stat || 0;
+    
+    if (statName === 'hp') {
+      return {
+        min: 2 * baseStat + 110,
+        max: 2 * baseStat + 110 + maxEV + maxIV
+      }
+    } else {
+      return {
+        min: Math.floor((2 * baseStat + 5) * 0.9),
+        max: Math.floor(((2 * baseStat) + maxEV + maxIV + 5) * 1.1)
+      }
+    }
+
+  }
+
   return (
     <Wrapper>
-      <h2 className="capitalize text-2xl font-bold mt-4">{pokemonDetails?.details.name}</h2>
-      <p className="text-sm text-gray-600">
-            {pokemonDetails?.species.genera.find(genus => genus.language.name === 'en')?.genus}
-          </p>
-      {
-        pokemonDetails?.details.types.map((type) => (
-          <span className={`inline-flex items-center rounded-md  px-2 py-1 text-md font-medium ring-1 ring-gray-500/10 ring-inset ${typeToColorMap[type.type.name]}`} >
-            {type.type.name}
-          </span>
-        ))
-      }
-        <img
+      <div className='text-center'>
+        <h2 className='text-gray-600 text-md'>#{pokemonDetails?.details.id.toString().padStart(4, "0")}</h2>
+        <h2 className="capitalize text-3xl font-bold">{pokemonDetails?.details.name}</h2>
+        <p className="text-md  text-gray-600">
+          {pokemonDetails?.species.genera.find(genus => genus.language.name === 'en')?.genus}
+        </p>
+
+
+      </div>
+      <div className='flex items-center justify-center gap-2 flex-wrap'>
+        {
+          pokemonDetails?.details.types.map((type) => (
+            <span className={`capitalize text-white w-fit min-w-24 inline-flex justify-center items-center rounded-md px-2 py-1 text-md font-medium ring-1 ring-slate-800/10 ring-inset ${typeToColorMap[type.type.name]}`} >
+              {type.type.name}
+            </span>
+
+          ))
+        }
+
+      </div>
+
+      <img
         src={pokemonSpriteUrl}
         onError={(e) => {
           e.currentTarget.src = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/0.png';
         }}
         loading='lazy'
-        
-          alt={pokemonDetails?.details.name}
-          className="w-64 h-64 object-contain antialiased mx-auto my-4"
-          style={{ maxWidth: '100%', maxHeight: '400px' }}
+
+        alt={pokemonDetails?.details.name}
+        className="w-64 h-64 object-contain antialiased mx-auto my-4"
+        style={{ maxWidth: '100%', maxHeight: '400px' }}
       />
-      <Blockquote>
-      {
-        pokemonDetails?.species.flavor_text_entries
-          .filter(entry => entry.language.name === 'en')
-          .map(entry => entry.flavor_text.replace(/\f/g, ' '))
-          .sort(() => Math.random() - 0.5)[0]
-      }
+
+
+      <Blockquote >
+        {
+          pokemonDetails?.species.flavor_text_entries
+            .filter(entry => entry.language.name === 'en')
+            .map(entry => entry.flavor_text.replace(/\f/g, ' '))
+            .sort(() => Math.random() - 0.5)[0]
+        }
       </Blockquote>
 
-      <div className="flex flex-col items-center justify-center h-screen">
-        Stats:
-        <ul className="list-disc">
-          {pokemonDetails?.details.stats.map((stat) => (
-            <li key={stat.stat.name}>
-              {statNameMap[stat.stat.name]}: {stat.base_stat}
-            </li>
-          ))}
-        </ul>
-        Abilities:
-        <ul className="list-disc capitalize">
-          {pokemonDetails?.details.abilities.map((ability) => (
-            <li key={ability.ability?.name}>
-              {ability.ability?.name}
-            </li>
-          ))}
-        </ul>
-        <div className="flex flex-col items-center">
+      
+
+      <div>Generation: {pokemonDetails?.species.generation.name}</div>
 
 
-          <p className="text-sm text-gray-600">
-            Habitat: {pokemonDetails?.species.habitat?.name || 'Unknown'}
-          </p>
-          </div>
 
+      <div className="">
+
+        <h3 className="text-2xl font-bold mb-4">Details</h3>
+
+
+
+        <table className="table-auto">
+
+          <tbody>
+            
+            <tr>
+              <td>National pokedex</td>
+              <td>{pokemonDetails?.details.id}</td>
+            </tr>
+            <tr>
+              <td>Height</td>
+              <td>{pokemonDetails?.details.height / 10} m</td>
+            </tr>
+            <tr>
+              <td>Weight</td>
+              <td>{pokemonDetails?.details?.weight / 10} kg</td>
+            </tr>
+          </tbody>
+        </table>
+
+        
+    <div>
+      Egg Groups: {pokemonDetails?.species.egg_groups.map(g => g.name).join(', ')}
+        </div>
+        <div className="mb-4">
+      <h3 className="font-semibold">Abilities:</h3>
+      <ul>
+        {pokemonDetails?.details.abilities.map(a => (
+          <li key={a.ability.name} className="capitalize">{a.ability.name}</li>
+        ))}
+      </ul>
     </div>
+        
+        <StatsTable data={(pokemonDetails?.details.stats || []).map((stat) => {
+          console.log(stat.effort)
+          return {
+            name: statNameMap[stat.stat.name],
+            value: stat.base_stat,
+            minMaxValues: calculateMinMaxStatValueAt100(stat.stat.name)
+          };
+        })} />
+
+      </div>
+
+      <div>
+        {pokemonDetails?.evolutionChain.chain && (
+          <>
+            <h3 className="text-2xl font-bold mb-4">Evolution Chain</h3>
+            
+              <div>
+              {pokemonDetails.evolutionChain.chain.evolves_to.map((evolution) => (
+                <div key={evolution.species.name} className="mb-2">
+                  <Card pokemon={{ name: evolution.species.name, id: evolution.species.url.split('/').slice(-2)[0] }} />
+                  {evolution.evolves_to.length > 0 && (
+                    <div>
+                      <span className="text-gray-500">
+                        <svg className="inline-block w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M12 2L2 7.5V16.5L12 22L22 16.5V7.5L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </span>
+                      {evolution.evolves_to.map((subEvolution) => (
+                        <Card key={subEvolution.species.name} pokemon={{ name: subEvolution.species.name, id: subEvolution.species.url.split('/').slice(-2)[0] }} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+              </div>
+          </> 
+        )}
+          
+      </div>
+      
 
     </Wrapper>
-  )
-}
+  );
+};
