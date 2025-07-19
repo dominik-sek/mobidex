@@ -1,7 +1,7 @@
 interface CardProps {
     pokemon: {
         name: string;
-        id: number;
+        id: string;
     };
 }
 import { useNavigate } from 'react-router';
@@ -24,7 +24,7 @@ export const Card = (props: CardProps) => {
                     }} className="w-full p-2 h-48 object-contain cursor-pointer" />
                 
             </object>
-                <div className="px-6 py-4">
+                <div className="px-4 py-2">
                 <div className="font-bold text-xl mb-2 capitalize text-center">{props.pokemon.name}</div>
                 </div>
 
