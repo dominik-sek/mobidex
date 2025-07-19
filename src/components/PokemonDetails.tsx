@@ -1,22 +1,23 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router'
+import { fetchPokemonDetailsById } from '../api';
 
 export const PokemonDetails = () => {
   const params = useParams<{ id?: string; name?: string; }>()
-  params.id && console.log(`Pokemon ID: ${params.id}`)
-  params.name && console.log(`Pokemon Name: ${params.name}`)
+
   const [pokemonDetails, setPokemonDetails] = useState(null);
-  useEffect(() => {
+  useEffect( () => {
     if (params.id) {
-      fetch(`https://pokeapi.co/api/v2/pokemon/${params.id}`)
-        .then(res => res.json())
-        .then(data => {
-          setPokemonDetails(data);
+      fetchPokemonDetailsById(params.id)
+        .then(([details, species]) => {
+          setPokemonDetails({ ...details, species: species });
         })
-        .catch(err => console.error('Error fetching Pokemon details:', err));
+        .catch(error => {
+          console.error('Error fetching Pokemon details:', error);
+        });
     }
   }, [params.id]);
-
+  console.log(pokemonDetails);
   return (
     <div className="flex flex-col items-center justify-center w-full h-full">
       <h2 className="text-2xl font-bold mb-4">Pokemon Details</h2>

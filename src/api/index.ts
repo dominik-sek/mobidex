@@ -10,3 +10,12 @@ export const fetchAllPokemon = () => {
       throw error;
     });
 }
+
+export const fetchPokemonDetailsById = async (id: string) => {
+  const [pokemonDetails, pokemonSpeciesDetails] = await Promise.all([
+    apiClient.get(`/pokemon/${id}`),
+    apiClient.get(`/pokemon-species/${id}`)
+  ]);
+  
+  return [pokemonDetails, pokemonSpeciesDetails];
+};

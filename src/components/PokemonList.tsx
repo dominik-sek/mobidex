@@ -13,6 +13,18 @@ export const PokemonList = (props: PokemonListProps) =>{
     const [searchQuery, setSearchQuery] = useState("");
     const [maxResults, setMaxResults] = useState(20);
     const [currentPage, setCurrentPage] = useState(1);
+    const [fileteredPokemon, setFilteredPokemon] = useState([]);
+    const startedTyping = searchQuery.length > 0;
+
+
+    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(event.target.value.toLowerCase());
+        setFilteredPokemon(
+            pokemonList.results?.filter((pokemon: { name: string; }) => pokemon.name.toLowerCase().includes(searchQuery))
+        );
+        console.log(fileteredPokemon);
+    };
+    console.log(searchQuery)
 
     useEffect(() => {
 
@@ -34,17 +46,24 @@ export const PokemonList = (props: PokemonListProps) =>{
         
     
     return(
-        <div className="flex flex-col justify-between w-full h-3/4 gap-2 divide-y-1">
+        <div className="flex flex-col justify-between w-full h-3/4 gap-2">
             <div className='max-h-1/6 '>
-                <Searchbar />
+                <Searchbar onChange={handleSearchChange} />
 
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 overflow-auto gap-2">
                 {
-                    pokemonList.results.map((pokemon, index)=>{
-                        return <Card key={index} pokemon={{name: pokemon.name, id: index+1}}/>
-                    })
+                    (startedTyping ? fileteredPokemon : pokemonList.results)?.length === 0 ? (
+                        <div className="col-span-full text-center text-gray-500 divide-y-0">
+                            No Pokemon found for "{searchQuery}"
+                        </div>
+                    ) :
+                    (startedTyping ? fileteredPokemon : pokemonList.results)?.slice((currentPage - 1) * maxResults, currentPage * maxResults).map((pokemon, index: number) => (
+                        <Card key={index} pokemon={{name: pokemon.name, id: pokemon.url.split('/')[6]}} />
+                    ))
+                    
+                        
                 }
             </div>
 

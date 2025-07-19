@@ -1,4 +1,10 @@
-export const Searchbar = () => {
+interface SeachbarProps {
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+export const Searchbar = (props: SeachbarProps) => {
+
+
     return (
         <div className="flex items-center p-2 border">
             <label htmlFor='pokemon-search-input' className='w-auto ml-2'>
@@ -11,7 +17,7 @@ export const Searchbar = () => {
 
             <div className="h-6 border-l border-slate-200 mx-2"></div>
 
-            <input className="h-10 w-full md:w-2/3" id="pokemon-search-input" type="search" defaultValue="" placeholder="Search for pokemon..."  />
+            <input onChange={props.onChange} className="h-10 w-full md:w-2/3" id="pokemon-search-input" type="search" defaultValue="" placeholder="Search for pokemon..."  />
 
         </div>
 

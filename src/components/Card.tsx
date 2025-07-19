@@ -12,7 +12,7 @@ export const Card = (props: CardProps) => {
         navigate(`/pokemon/${props.pokemon.id}`);
     }
     return (
-        <div className="p-2 border flex items-center flex-col capitalize " onClick={handleClick}>
+        <div className="p-2 border flex items-center flex-col capitalize h-56" onClick={handleClick}>
              <span className="ml-2 text-gray-500">#{props.pokemon.id}</span>
 
             <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/refs/heads/master/sprites/pokemon/${props.pokemon.id}.png`} />
