@@ -56,7 +56,6 @@ export const PokemonList = () =>{
             console.error('Error fetching Pokémon:', error);
         });
         
-
     }, [])
     
     if (!pokemonList.results || pokemonList.results.length === 0) {

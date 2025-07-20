@@ -24,7 +24,7 @@ export const Wrapper = (props: WrapperProps) => {
                     </div>
                 </div>
             </nav>
-                {props.children}
+            {props.children}
         </div>
     );
 };
