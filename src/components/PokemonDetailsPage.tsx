@@ -10,6 +10,7 @@ import { StatsTable } from './StatsTable';
 import { Card } from './Card';
 import type { Ability } from '../types/ability';
 import { DataTable } from './DataTable';
+import EvolutionChain from './EvolutionChain/EvolutionChain';
 
 
 const statNameMap: Record<string, string> = {
@@ -215,48 +216,48 @@ export const PokemonDetailsPage = (props: PokemonDetailsPageProps) => {
 
         {
           pokemonDetails ? (
-                 <div className="mb-4">
-          <h3 className="font-semibold">Abilities:</h3>
-          <ul>
-            {pokemonDetails?.details.abilities.map(a => (
-              <li key={a.ability?.name} className="capitalize">
-                <span className='font-bold'>{a.ability?.name || "unknown" }</span>
+            <div className="mb-4">
+              <h3 className="font-semibold">Abilities:</h3>
+              <ul>
+                {pokemonDetails?.details.abilities.map(a => (
+                  <li key={a.ability?.name} className="capitalize">
+                    <span className='font-bold'>{a.ability?.name || "unknown"}</span>
 
-                <div className='text-gray-500'>
-                  {
-                    abilityDetails ? (
-                      abilityDetails.filter((ability) => ability.name === a.ability?.name).map((details) => {
-                        return (
-                          <span>
-                            {details.effect_entries.filter(d => d.language.name === "en").map((effect) => {
-                              console.log(effect.short_effect);
-                              return (
-                                <span>
-                                  {effect.short_effect}
-                                </span>
-                              );
-                            })
-                            }
-                          </span>
-                        );
-                      })
-                    ) : (
-                      <div>
-                        loading...
-                      </div>
-                    )
+                    <div className='text-gray-500'>
+                      {
+                        abilityDetails ? (
+                          abilityDetails.filter((ability) => ability.name === a.ability?.name).map((details) => {
+                            return (
+                              <span>
+                                {details.effect_entries.filter(d => d.language.name === "en").map((effect) => {
+                                  console.log(effect.short_effect);
+                                  return (
+                                    <span>
+                                      {effect.short_effect}
+                                    </span>
+                                  );
+                                })
+                                }
+                              </span>
+                            );
+                          })
+                        ) : (
+                          <div>
+                            loading...
+                          </div>
+                        )
 
-                  }
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
+                      }
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
           ) :
             (
               <div>
                 loading...
-                </div>
+              </div>
             )
         }
 
@@ -269,38 +270,10 @@ export const PokemonDetailsPage = (props: PokemonDetailsPageProps) => {
         })} />
 
       </div>
-
-      <div>
-        {evolutionChain?.chain && (
-          <>
-            <h3 className="text-2xl font-bold mb-4">Evolution Chain</h3>
-
-            <div className='flex flex-col items-center justify-center gap-2'>
-              <Card pokemon={{ name: evolutionChain.chain.species.name, id: evolutionChain.chain.species.url.split('/').slice(-2)[0] }} />
-              <span className="text-gray-500 my-2 mx-2">
-                <svg height="48" width="48" style={{ rotate: '180deg' }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="m26.71 10.29-10-10a1 1 0 0 0-1.41 0l-10 10 1.41 1.41L15 3.41V32h2V3.41l8.29 8.29z" /></svg>
-              </span>
-              {evolutionChain.chain.evolves_to.map((evolution) => (
-                <div key={evolution.species.name} className="mb-2">
-                  <Card pokemon={{ name: evolution.species.name, id: evolution.species.url.split('/').slice(-2)[0] }} />
-                  {evolution.evolves_to.length > 0 && (
-                    <div className='flex flex-col items-center justify-center gap-2'>
-                      <span className="text-gray-500 my-2 mx-2">
-                        <svg height="48" width="48" style={{ rotate: '180deg' }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="m26.71 10.29-10-10a1 1 0 0 0-1.41 0l-10 10 1.41 1.41L15 3.41V32h2V3.41l8.29 8.29z" /></svg>
-                      </span>
-                      {evolution.evolves_to.map((subEvolution) => (
-                        <Card key={subEvolution.species.name} pokemon={{ name: subEvolution.species.name, id: subEvolution.species.url.split('/').slice(-2)[0] }} />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </>
-        )}
-
-      </div>
-
+      
+      {
+        evolutionChain && <EvolutionChain evolutionChain={evolutionChain} />
+      }
 
     </Wrapper>
   );
