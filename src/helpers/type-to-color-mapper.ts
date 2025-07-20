@@ -1,0 +1,20 @@
+export const typeToColorMapper: Record<string, string> = {
+  normal: 'bg-gray-300',
+  fire: 'bg-red-500',
+  water: 'bg-blue-500',
+  grass: 'bg-green-500',
+  electric: 'bg-yellow-500',
+  ice: 'bg-cyan-300',
+  fighting: 'bg-pink-500',
+  poison: 'bg-purple-500',
+  ground: 'bg-brown-500',
+  flying: 'bg-indigo-400',
+  psychic: 'bg-pink-300',
+  bug: 'bg-lime-500',
+  rock: 'bg-gray-600',
+  ghost: 'bg-indigo-700',
+  dragon: 'bg-blue-800',
+  dark: 'bg-gray-800',
+  steel: 'bg-slate-400',
+  fairy: 'bg-pink-200'
+};

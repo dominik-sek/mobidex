@@ -24,25 +24,23 @@ const BarToWidth = (value: number, maxValue: number) => {
 
 export const StatsTable = (props: StatsTableProps) => {
  
- 
   return (
-    <div
-      className="relative flex flex-col w-full h-full overflow-scroll text-gray-700 rounded-xl bg-clip-border">
+
       <table className="w-full text-left table-auto min-w-max ">
 
         <tbody>
           {
             props.data.map((valueSet) => {
               return (
-                <tr className="hover:bg-slate-50 even:bg-slate-100">
-                  <th className='w-fit'>{valueSet.name}</th>
+                <tr className='border-b first-of-type:border-t capitalize border-slate-400'>
+                  <th className='px-2 py-1 text-left border-slate-200'>{valueSet.name}</th>
                   <td>
-                    <div className={`relative capitalize text-white w-fit min-w-24 inline-flex  items-center rounded-md  text-md font-medium ring-1 ring-slate-800/10 ring-inset`}>
-                      <span className={`w-full h-2 rounded-md ${BarToColor(valueSet.value, valueSet.minMaxValues.max)}`} style={{width:BarToWidth(valueSet.value, valueSet.minMaxValues.min) }} ></span>
-                      </div>
+                    <div className={`relative capitalize text-white border w-fit min-w-24 inline-flex  items-center rounded-md text-md font-medium `}>
+                      <span className={`w-full h-3 rounded-md ${BarToColor(valueSet.value, valueSet.minMaxValues.max)}`} style={{width:BarToWidth(valueSet.value, valueSet.minMaxValues.min) }} ></span>
+                    </div>
                   </td>
                   <td>
-                    <p className="block text-sm text-slate-800">
+                    <p className="block  text-slate-800">
                       {valueSet.value}
                     </p>
                   </td>
@@ -56,18 +54,17 @@ export const StatsTable = (props: StatsTableProps) => {
               );
             })
           }
-          <tr>
-            <th>
+          <tr className='border-b first-of-type:border-t capitalize border-slate-400'>
+          <th className='px-2 py-1 text-left border-slate-200'>
               Total
             </th>
             <th></th>
-            <th>Base</th>
-            <th>Min</th>
-            <th>Max</th>
+            <th className='px-2 py-1 text-left border-slate-200'>Base</th>
+            <th className='px-2 py-1 text-left border-slate-200'>Min</th>
+            <th className='px-2 py-1 text-left border-slate-200'>Max</th>
           </tr>
         </tbody>
 
       </table>
-    </div>
   );
 };

@@ -1,5 +1,5 @@
-import { NextIcon } from '../../icons/PreviousIcon';
-import { PreviousIcon } from '../../icons/NextIcon';
+import { PreviousIcon } from '../../icons/PreviousIcon';
+import { NextIcon } from '../../icons/NextIcon';
 import { PageNumber } from './page-number';
 
 
