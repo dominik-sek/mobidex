@@ -85,7 +85,9 @@ npm run preview
 
 <details>
 <summary>Details</summary>
+  
   [DIRECT LINK TO IMAGE](https://github.com/user-attachments/assets/e0f9fa63-6263-4a96-a5cc-018c97116e2a)
+  
   (image is too large to show up in a readme)
   
 </details>
