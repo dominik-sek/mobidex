@@ -1,21 +1,52 @@
-add styling for desktop:
+# GI Pokédex
 
-- flavor text container max w
-- add layout
-- add abilities tooltips
-  add back button on details page
-  add prev next buttons for details page
-  add skeletons and loaders
-  addoutline to search
-  change the widths so that it fits better on higher res screens
-  fix pagination on mobile for bigger numbers - add padding
-  fix for evolution chain arrows if there's no evolution
-  fix for evolution chain card width, getsmax width on mobile
-  add desktop layout to evolution chains
-  add reroutes for every other site to reroute to /
-  add tooltips
-  add error handlers
-  add toasts
-  refactor to components and helpers
-  ad dmobile menu?
-  add prettier
+Pokédex web app built with React, Vite, TypeScript, and Tailwind CSS.
+
+## 🚀 Live Demo
+
+[View the live app here!](https://mobidex.vercel.app/)
+
+---
+
+## 🛠️ Setup Instructions
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/dominik-sek/mobidex.git
+cd mobidex
+```
+
+### 2. Install dependencies
+```bash
+npm install
+```
+
+### 3. Start the development server
+```bash
+npm run dev
+```
+- The app will be available at [http://localhost:5173](http://localhost:5173).
+
+### 4. Build for production
+```bash
+npm run build
+```
+- The output will be in the `dist/` folder.
+
+### 5. Preview the production build
+```bash
+npm run preview
+```
+
+---
+
+## 🧰 Tech Stack
+- [React](https://react.dev/)
+- [Vite](https://vitejs.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [PokeAPI](https://pokeapi.co/)
+- [React Router](https://reactrouter.com/)
+- [Prettier](https://prettier.io/)
+
+---
