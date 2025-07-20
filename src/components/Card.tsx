@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
+import type { PokemonBaseInfo } from '../types/pokemon';
 
 interface CardProps {
     className?: string;
-    pokemon: {
-        name: string;
-        id: string;
-    };
+    pokemon: PokemonBaseInfo
+    prevNeighbor?: PokemonBaseInfo | null;
+    nextNeighbor?: PokemonBaseInfo | null;
 }
 
 export const Card = (props: CardProps) => {
@@ -17,8 +17,8 @@ export const Card = (props: CardProps) => {
 
     return (
 
-        <div className={`relative h-full w-full max-w-72 max-h-48 bg-white/30 hover:bg-white/60 rounded-md bg-clip-padding backdrop-filter backdrop-blur-lg  border border-gray-100 ${props.className || ""}`}>
-            <Link to={`/pokemon/${props.pokemon.id}`} >
+        <div className={`relative h-full w-full min-w-36 max-w-72 max-h-48 bg-white/30 hover:bg-white/60 rounded-md bg-clip-padding backdrop-filter backdrop-blur-lg  border border-gray-100 ${props.className || ""}`}>
+            <Link to={`/pokemon/${props.pokemon.id}`}>
             {!loaded && (
                     <div className=" absolute inset-0 m-6 rounded-md bg-gray-200 animate-pulse"></div>
                 )}

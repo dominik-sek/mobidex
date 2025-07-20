@@ -14,7 +14,7 @@ export const Pagination = (props: PaginationProps) => {
   console.log(props.pageCount)
   
   return (
-    <nav className="flex items-center gap-x-1 px-2" aria-label="Pagination">
+    <nav className="flex items-center gap-x-1 p-2" aria-label="Pagination">
 
       <button
         onClick={() => props.onPageChange(props.currentPage - 1)}

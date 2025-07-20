@@ -1,28 +1,30 @@
-import type React from 'react';
+import { Link } from 'react-router';
+import type { PokemonDetailsNavigationState } from '../../types/pokemon';
 
-interface DetailsNavigationProps {
-  neighbours?: {
-    prev: React.ReactNode;
-    next: React.ReactNode;
-  };
-}
-export const DetailsNavigation = (props: DetailsNavigationProps) => {
+export const DetailsNavigation = (props: PokemonDetailsNavigationState) => {
+
   return (
     <div className='flex justify-between'>
       {
-        props.neighbours?.prev && (
-          <button>
-            Previous
-            <div className="capitalize text-gray-500 text-sm">{props.neighbours?.prev}</div>
-          </button>
+        props.previous && (
+          <Link to={`/pokemon/${props.previous.id}`}>
+            <button>
+              <span className='text-lg'>Previous</span>
+              <div className="capitalize text-gray-500 text-md">{props.previous.name}</div>
+              <span className='capitalize text-gray-500 text-sm'>#{props.previous.id}</span>
+            </button>
+          </Link>
         )
       }
       {
-        props.neighbours?.next && (
-          <button>
-            Next
-            <div className="capitalize text-gray-500 text-sm">{props.neighbours?.next || 0}</div>
-          </button>
+        props.next && (
+          <Link to={`/pokemon/${props.next.id}`}>
+            <button>
+              <span className='text-lg'>Next</span>
+              <div className="capitalize text-gray-500 text-md">{props.next.name}</div>
+              <span className='capitalize text-gray-500 text-sm'>#{props.next.id}</span>
+            </button>
+          </Link>
         )
       }
 

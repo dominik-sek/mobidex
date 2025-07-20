@@ -1,6 +1,7 @@
 import { typeToColorMapper } from '../../helpers/type-to-color-mapper';
 import type { PokemonDetails } from '../../types/pokemon-details';
 import type { PokemonSpecies } from '../../types/pokemon-species';
+import { Badge } from '../Badge';
 
 interface DetailsHeaderProps {
   details: { details: PokemonDetails, species: PokemonSpecies; };
@@ -16,10 +17,9 @@ export const DetailsHeader = (props: DetailsHeaderProps) => {
       <div className='flex items-center justify-center gap-2 flex-wrap'>
         {
           props.details?.details.types.map((type) => (
-            <span className={`capitalize text-white w-fit min-w-24 inline-flex justify-center items-center rounded-md px-2 py-1 text-md font-medium ring-1 ring-slate-800/10 ring-inset ${typeToColorMapper[type.type.name]}`} >
-              {type.type.name}
-            </span>
-
+            <Badge className={`${typeToColorMapper[type.type.name]}`}>
+            {type.type.name}
+            </Badge>
           ))
         }
 

@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Link } from 'react-router';
-import { Menu } from './Menu';
 
 interface WrapperProps {
     children?: React.ReactNode;
@@ -19,9 +18,6 @@ export const Wrapper = (props: WrapperProps) => {
                         </h2>
                     </Link>
 
-                    <div className="flex items-center gap-4">
-                        <Menu />
-                    </div>
                 </div>
             </nav>
             {props.children}

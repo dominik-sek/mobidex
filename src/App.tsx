@@ -1,12 +1,14 @@
-import {Wrapper} from "./components/Wrapper.tsx";
-import {PokemonList} from "./components/PokemonList.tsx";
+import { Wrapper } from "./components/Wrapper.tsx";
+import { PokemonList } from "./components/PokemonList.tsx";
 
 function App() {
     return (
-        <Wrapper>
-            <PokemonList /> 
-        </Wrapper>
-    )
+        <div className='bg-slate-300'>
+            <Wrapper>
+                <PokemonList />
+            </Wrapper>
+        </div>
+    );
 }
 
 export default App;

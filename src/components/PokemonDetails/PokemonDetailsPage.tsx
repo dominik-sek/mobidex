@@ -1,152 +1,112 @@
-import React, { useEffect, useState, version } from 'react';
-import { useParams } from 'react-router';
+import { Link, useParams } from 'react-router';
 import { fetchAbilityDetailsById, fetchMoveDetailsById, fetchPokemonDetailsById, fetchPokemonEvolutionChainById } from '../../api';
 import { Wrapper } from '../Wrapper';
 import type { PokemonDetails } from '../../types/pokemon-details';
-import type { PokemonSpecies } from '../../types/pokemon-species';
+import { type PokemonSpecies } from '../../types/pokemon-species';
 import type { PokemonEvolutionChain } from '../../types/pokemon-evolution-chain';
-import type { LevelUpMoveWithDetails, Move } from '../../types/move';
+import type { LevelUpMoveWithDetails } from '../../types/move';
 import { StatsTable } from './StatsTable';
 import type { Ability } from '../../types/ability';
 import { DataTable } from '../DataTable';
 import EvolutionChain from '../EvolutionChain/EvolutionChain';
 import { calculateMinMaxStatValueAt100 } from '../../helpers/calculate-min-max-stat';
-import { DetailsNavigation } from './DetailsNavigation';
 import { DetailsHeader } from './DetailsHeader';
 import { FlavorImage } from './FlavorImage';
 import { Tooltip } from '../Tooltip';
+import { renderMoveTableRows } from '../../helpers/render-move-table-rows';
+import { LoadingScreen } from '../LoadingScreen';
+import { LoadingSpinner } from '../LoadingSpinner';
+import { getAbilityDescription } from '../../helpers/get-ability-description';
+import { useFetch } from '../../hooks/useFetch';
+import { ErrorPage } from '../ErrorPage';
+import { statNameMap } from '../../helpers/stat-name-mapper';
+import { Arrow } from '../../icons/Arrow';
 
 
-const statNameMap: Record<string, string> = {
-  hp: 'HP',
-  attack: 'Attack',
-  defense: 'Defense',
-  'special-attack': 'Sp. Atk',
-  'special-defense': 'Sp. Def',
-  speed: 'Speed'
-};
 
-interface PokemonDetailsPageProps {
-  previousName?: string;
-  nextName?: string;
-}
 
-export const PokemonDetailsPage = (props: PokemonDetailsPageProps) => {
+export const PokemonDetailsPage = () => {
 
   const params = useParams<{ id?: string; name?: string; }>();
   const pokemonSpriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${params.id}.svg`;
-  const [pokemonDetails, setPokemonDetails] = useState<{ details: PokemonDetails, species: PokemonSpecies; }>();
-  const [evolutionChain, setEvolutionChain] = useState<PokemonEvolutionChain>();
-  const [abilityDetails, setAbilityDetails] = useState<Ability[]>([]);
-  const [moveDetails, setMoveDetails] = useState<LevelUpMoveWithDetails[]>([]);
 
-  useEffect(() => {
-    if (params.id) {
-      fetchPokemonDetailsById(params.id)
-        .then(({ details, species }) => {
-          setPokemonDetails({ details, species });
-        })
-        .catch(error => {
-          console.error('Error fetching Pokemon details:', error);
-        });
-    }
-  }, [params.id]);
 
-  useEffect(() => {
-    if (pokemonDetails) {
-      fetchPokemonEvolutionChainById(pokemonDetails.species.evolution_chain.url.split('/').slice(-2)[0])
-        .then(chain => {
-          setEvolutionChain(chain);
-        })
-        .catch(error => {
-          console.error('Error fetching evolution chain:', error);
-        });
-    }
-  }, [pokemonDetails]);
+  const {
+    data: pokemonDetails,
+    loading: loadingPokemon,
+    error: pokemonDetailsError
+  } = useFetch<{
+    details: PokemonDetails;
+    species: PokemonSpecies;
+  }>(() => fetchPokemonDetailsById(params.id as string), [params.id]);
 
-  useEffect(() => {
-    if (pokemonDetails) {
+  const evolutionChainId = pokemonDetails?.species.evolution_chain.url.split('/').slice(-2)[0];
+
+  const {
+    data: evolutionChain,
+    loading: evolutionChainLoading,
+    error: evolutionChainError
+  } = useFetch<PokemonEvolutionChain>(() => fetchPokemonEvolutionChainById(evolutionChainId as string), [pokemonDetails]);
+
+  const {
+    data: abilityDetails,
+    loading: loadingAbilities,
+    error: abilitiesError,
+  } = useFetch<Ability[]>(
+    async () => {
+      if (!pokemonDetails) return [];
       const promises = pokemonDetails.details.abilities.map((ability) => {
         const id = ability.ability?.url.split('/').slice(-2)[0] || "0";
         return fetchAbilityDetailsById(id);
       });
+      return Promise.all(promises);
+    },
+    [pokemonDetails]
+  );
 
-      Promise.all(promises)
-        .then((fetchedAbilities) => {
-          setAbilityDetails(fetchedAbilities);
+
+  const {
+    data: moveDetails,
+    loading: loadingMoves,
+    error: movesError,
+  } = useFetch<LevelUpMoveWithDetails[]>(
+    async () => {
+      if (!pokemonDetails) return [];
+
+      const levelUpMoves = pokemonDetails.details.moves
+        .map((move) => {
+          const levelUpDetails = move.version_group_details.filter(
+            (v) => v.move_learn_method.name === "level-up"
+          );
+          if (levelUpDetails.length === 0) return null;
+
+          const firstDetail = levelUpDetails[0];
+          return {
+            name: move.move.name,
+            fromLevel: firstDetail.level_learned_at ?? 0,
+            versionName: firstDetail.version_group.name,
+            url: move.move.url,
+          };
         })
-        .catch(console.error);
-    }
-  }, [pokemonDetails]);
-
-  useEffect(() => {
-    if (pokemonDetails) {
-      const moves = pokemonDetails.details.moves;
-
-      const levelUpMoves = moves.map((move) => {
-        const levelUpDetails = move.version_group_details.filter((version) => {
-          return version.move_learn_method.name === "level-up";
-        });
-        if (levelUpDetails.length === 0) return null;
-
-        const firstDetail = levelUpDetails[0];
-        return {
-          name: move.move.name,
-          fromLevel: firstDetail.level_learned_at,
-          versionName: firstDetail.version_group.name,
-          url: move.move.url
-        };
-      })
         .filter(Boolean)
-        .sort((a, b) => (a!.fromLevel ?? 0) - (b!.fromLevel ?? 0)); // sort by level
+        .sort((a, b) => (a!.fromLevel ?? 0) - (b!.fromLevel ?? 0));
 
       const promises = levelUpMoves.map(async (move) => {
-        const id = move?.url.split('/').slice(-2)[0] || "0";
+        const id = move!.url.split("/").slice(-2)[0];
         const details = await fetchMoveDetailsById(id);
-        return {
-          ...move,
-          ...details
-        } as LevelUpMoveWithDetails;
+        return { ...move!, ...details } as LevelUpMoveWithDetails;
       });
 
-      Promise.all(promises)
-        .then((fetchedMoves) => {
-          setMoveDetails(fetchedMoves);
-          console.log(fetchedMoves[0]);
-        })
-        .catch(console.error);
-    }
-  }, [pokemonDetails]);
+      return Promise.all(promises);
+    },
+    [pokemonDetails]
+  );
 
-  const renderMoveTableRows = () => {
 
-    return moveDetails.map((move) => {
-      let englishName = move.names.find((move) => {
-        return move.language.name === "en";
-      });
-      return [
-        move.fromLevel,
-        englishName?.name,
-        move.type.name,
-        move.power,
-        move.accuracy
-      ];
-    });
-  };
-  console.log(renderMoveTableRows());
-
-  const getAbilityDesciprtion = (abilityName: string | undefined) => {
-    if (!abilityName) return "";
-    const match = abilityDetails.find((ability) => ability.name === abilityName);
-    if (!match) return "";
-
-    const englishDescription = match.effect_entries.find((entry) => entry.language.name === "en");
-
-    return englishDescription?.short_effect || "";
-  };
 
   const getPokemonAbilities = (): React.ReactNode => {
-    if (!pokemonDetails?.details.abilities) return null;
+    if (!pokemonDetails?.details.abilities) return <LoadingSpinner />;;
+    if (!abilityDetails) return <LoadingSpinner />;
 
     return (
       <ol className="list-decimal space-y-1">
@@ -154,7 +114,7 @@ export const PokemonDetailsPage = (props: PokemonDetailsPageProps) => {
           <li key={ability.ability?.name} className="capitalize ">
             <Tooltip
               name={ability.ability?.name || "Unknown"}
-              description={getAbilityDesciprtion(ability.ability?.name) || "No description available."}
+              description={getAbilityDescription(ability.ability?.name, abilityDetails) || "No description available."}
             />
           </li>
         ))}
@@ -163,16 +123,22 @@ export const PokemonDetailsPage = (props: PokemonDetailsPageProps) => {
   };
 
 
-  if (!pokemonDetails) {
-    return <div>
-      loading...
-    </div>;
-  } else {
+
+  if (loadingPokemon) {
+    return <LoadingScreen />;
+  }
+
+  if (pokemonDetails) {
     return (
       <Wrapper className='h-auto!'>
+        <div className="mb-4">
+          <Link to='/' className="h-10 inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md shadow-sm transition-colors border border-gray-200">
+            <Arrow className="w-4 h-4 -rotate-90" />
+            <span>Back to search</span>
+          </Link>
+        </div>
 
         <div className='text-center flex-1 '>
-          <DetailsNavigation />
           <DetailsHeader details={pokemonDetails} />
         </div>
 
@@ -180,70 +146,87 @@ export const PokemonDetailsPage = (props: PokemonDetailsPageProps) => {
 
         <div className="flex flex-col gap-6">
           <div className='flex-1'>
-          <div className='mb-6'>
+            <div className='mb-6'>
               <h3 className="text-2xl font-bold ">Stats</h3>
               <span className='text-gray-600'>Min and Max values are calculated for Lv. 100 Pokemon</span>
             </div>
 
-        <StatsTable data={(pokemonDetails?.details.stats || []).map((stat) => {
-                    return {
-                      name: statNameMap[stat.stat.name],
-                      value: stat.base_stat,
-                      minMaxValues: calculateMinMaxStatValueAt100(stat.stat.name, pokemonDetails.details.stats)
-                    };
-        })} />
-            </div>
-          {
-            pokemonDetails ? (
-              <div className='flex-1'>
-                <h3 className="text-2xl font-bold mb-4">Details</h3>
-                <DataTable
-                  rows={[
-                    ["National №", pokemonDetails?.details.id],
-                    ["Height", `${pokemonDetails?.details.height / 10} m`],
-                    ["Weight", `${pokemonDetails?.details?.weight / 10} kg`],
-                    ["Abilities", getPokemonAbilities()]
-                  ]}
-                />
-              </div>
-            ) : (
-              <div>
-                loading...
-              </div>
-            )
-          }
+            <StatsTable data={(pokemonDetails.details.stats || []).map((stat) => {
+              return {
+                name: statNameMap[stat.stat.name],
+                value: stat.base_stat,
+                minMaxValues: calculateMinMaxStatValueAt100(stat.stat.name, pokemonDetails.details.stats)
+              };
+            })} />
+          </div>
 
 
-          
+          <div className='flex-1'>
+            <h3 className="text-2xl font-bold mb-4">Details</h3>
+            {loadingAbilities && <LoadingSpinner />}
+            {!loadingAbilities && abilitiesError && (
+              <div className="text-red-500">{abilitiesError.message}</div>
+
+            )}
+            {!loadingAbilities && !abilitiesError && abilityDetails && (
+              <DataTable
+                rows={[
+                  ["National №", pokemonDetails.details.id],
+                  ["Height", `${pokemonDetails.details.height / 10} m`],
+                  ["Weight", `${pokemonDetails.details.weight / 10} kg`],
+                  ["Abilities", getPokemonAbilities()]
+                ]}
+              />
+            )}
+          </div>
+
+
+
+
           <div className='flex-1'>
             <div className='mb-6'>
               <h3 className="text-2xl font-bold ">Moves</h3>
               <span className='text-gray-600'>Moves learned by leveling up</span>
             </div>
-            <DataTable
-              headers={[
-                "Lv.",
-                "Move",
-                "Type",
-                "Power",
-                "Acc"
-              ]}
-              rows={[
-                ...renderMoveTableRows()
-              ]}
-            />
+
+            {loadingMoves && <LoadingSpinner />}
+            {!loadingMoves && movesError && (
+              <div className="text-red-500">{movesError.message}</div>
+            )}
+            {!loadingMoves && !movesError && moveDetails && (
+              <DataTable
+                headers={[
+                  "Lv.",
+                  "Move",
+                  "Type",
+                  "Power",
+                  "Acc"
+                ]}
+                rows={[
+                  ...renderMoveTableRows(moveDetails ?? [])
+                ]}
+              />
+            )}
+
+
           </div>
 
         </div>
 
 
-        {
-          evolutionChain &&
+        {evolutionChainLoading && <LoadingSpinner />}
+        {!evolutionChainLoading && evolutionChainError && (
+          <div className="text-red-500">{evolutionChainError.message}</div>
+        )}
+        {!evolutionChainLoading && !evolutionChainError && evolutionChain && (
           <EvolutionChain evolutionChain={evolutionChain} />
-        }
-
-
+        )}
       </Wrapper>
     );
   }
-};
+
+  if (pokemonDetailsError) {
+    return <ErrorPage errorMsg={pokemonDetailsError.message} />;
+  }
+}
+

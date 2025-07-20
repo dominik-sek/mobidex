@@ -39,7 +39,6 @@ export const Tooltip = ({ name, description }: TooltipProps) => {
     >
       <span className="font-bold ">{name}</span>
 
-      {/* info icon */}
       <button
         type="button"
         onClick={toggleTooltip}
@@ -49,7 +48,6 @@ export const Tooltip = ({ name, description }: TooltipProps) => {
         <Info />
       </button>
 
-      {/* Tooltip bubble */}
       <div
         className={`
           absolute left-1/2 top-full mt-2 w-64 -translate-x-1/2
