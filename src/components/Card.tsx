@@ -1,5 +1,4 @@
 import { Link } from 'react-router';
-import type { Pokemon } from '../types/pokemon';
 
 interface CardProps {
     className?: string;
@@ -7,7 +6,6 @@ interface CardProps {
         name: string;
         id: string;
     };
-
 }
 
 export const Card = (props: CardProps) => {
