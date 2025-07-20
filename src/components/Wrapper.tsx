@@ -13,7 +13,7 @@ export const Wrapper = (props: WrapperProps) => {
 			<nav>
 				<div className="flex justify-between items-center mb-4">
 					<Link to={`/`}>
-						<h2 className="text-2xl font-bold">Pokédex</h2>
+						<h2 className="text-2xl font-bold">Mobidex</h2>
 					</Link>
 				</div>
 			</nav>
