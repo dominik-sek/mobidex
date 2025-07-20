@@ -132,7 +132,7 @@ export const PokemonDetailsPage = () => {
     return (
       <Wrapper className='h-auto!'>
         <div className="mb-4">
-          <Link to='/' className="h-10 inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md shadow-sm transition-colors border border-gray-200">
+          <Link to='/' className="h-10 inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-gray-200 text-gray-700 rounded-sm w-full md:w-auto transition-colors border border-gray-200">
             <Arrow className="w-4 h-4 -rotate-90" />
             <span>Back to search</span>
           </Link>
