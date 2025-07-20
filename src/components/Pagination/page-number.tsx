@@ -2,7 +2,7 @@ export const PageNumber = (props: { page: number; onClick: (page: number) => voi
   const handleClick = () => {
     props.onClick(props.page);
   };
-  const activeClass = props.isActive ? 'bg-blue-500 text-white' : '';
+  const activeClass = props.isActive ? 'bg-slate-500 text-white' : '';
   return (
     <button type="button"
       onClick={handleClick}

@@ -26,11 +26,13 @@ export const PokemonList = (props: PokemonListProps) =>{
 
 
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        
+            console.log(fileteredPokemon.length /maxResults)
+
         //handle case with empty search query
         if (event.target.value === "") {
             setStartedTyping(false);
             setSearchQuery("");
+            setCurrentPage(1)
             setFilteredPokemon([]);
             return;
         }
@@ -42,7 +44,6 @@ export const PokemonList = (props: PokemonListProps) =>{
         );
         setCurrentPage(1); // Reset to first page on new search
         
-
         console.log(fileteredPokemon);
     };
     
@@ -76,12 +77,12 @@ export const PokemonList = (props: PokemonListProps) =>{
         
     
     return(
-        <div className="flex flex-col justify-around w-full h-full gap-2">
-            <div className='min-h-12'>
+        <div className="flex flex-col gap-2 overflow-hidden">
+            <div className='h-16 shrink-0'>
                 <Searchbar onChange={handleSearchChange} />
             </div>
 
-            <div className="h-fit grid grid-cols-2 md:grid-cols-4 2xl:grid-cols-6 overflow-y-auto p-2 gap-2">
+            <div className="flex flex-1 flex-wrap justify-center overflow-y-auto p-2 gap-2">
                 {
                     (startedTyping ? fileteredPokemon : pokemonList.results)?.length === 0 ? (
                         <div className="col-span-full text-center text-gray-500 divide-y-0">
@@ -96,7 +97,7 @@ export const PokemonList = (props: PokemonListProps) =>{
                 }
             </div>
 
-            <div className='min-h-12 flex items-center justify-center w-full '>
+            <div className='h-16 shrink-0 flex items-center justify-center w-full '>
                 <Pagination
                     currentPage={currentPage}
                     onPageChange={onPageChange}

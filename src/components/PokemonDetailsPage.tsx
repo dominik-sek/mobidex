@@ -9,6 +9,7 @@ import { Blockquote } from './Blockquote';
 import { StatsTable } from './StatsTable';
 import { Card } from './Card';
 import type { Ability } from '../types/ability';
+import { DataTable } from './DataTable';
 
 
 const statNameMap: Record<string, string> = {
@@ -131,8 +132,8 @@ export const PokemonDetailsPage = (props: PokemonDetailsPageProps) => {
   };
 
   return (
-    <Wrapper>
-      <div className='text-center'>
+    <Wrapper className='h-auto!'>
+      <div className='text-center flex-1'>
         <div className='flex justify-between'>
           <button>
             Previous
@@ -195,28 +196,14 @@ export const PokemonDetailsPage = (props: PokemonDetailsPageProps) => {
 
         <h3 className="text-2xl font-bold mb-4">Details</h3>
 
-        <table className="table-auto">
+        <DataTable
+          rows={[
+            ["National pokedex number", pokemonDetails?.details.id],
+            ["Height", `${pokemonDetails?.details.height / 10} m` ],
+            ["Weight", `${pokemonDetails?.details?.weight / 10} kg`]
+          ]}
+        />
 
-          <tbody>
-            <tr>
-              <td>National pokedex</td>
-              <td>{pokemonDetails?.details.id}</td>
-            </tr>
-            <tr>
-              <td>Height</td>
-              <td>{pokemonDetails?.details.height / 10} m</td>
-            </tr>
-            <tr>
-              <td>Weight</td>
-              <td>{pokemonDetails?.details?.weight / 10} kg</td>
-            </tr>
-          </tbody>
-        </table>
-
-
-        <div>
-          Egg Groups: {pokemonDetails?.species.egg_groups.map(g => g.name).join(', ')}
-        </div>
         <div className="mb-4">
           <h3 className="font-semibold">Abilities:</h3>
           <ul>
