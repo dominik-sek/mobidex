@@ -5,21 +5,16 @@ import { Pagination } from './Pagination/Pagination.tsx';
 import { fetchAllPokemon } from '../api/index.ts';
 import type { Pokemon, Result } from '../types/pokemon.ts';
 
-interface PokemonListProps {
-    //todo
-}
-
-
-export const PokemonList = (props: PokemonListProps) =>{
+export const PokemonList = () =>{
     const [pokemonList, setPokemonList] = useState<Pokemon>({
         count: 0,
         next: "null",
         previous: null,
         results: []
     });
-
+    const maxResults = 20
     const [searchQuery, setSearchQuery] = useState("");
-    const [maxResults, setMaxResults] = useState(20);
+    //const [maxResults, setMaxResults] = useState(20);
     const [currentPage, setCurrentPage] = useState(1);
     const [fileteredPokemon, setFilteredPokemon] = useState<Result[]>([]);
     const [startedTyping, setStartedTyping] = useState(false);
@@ -90,7 +85,7 @@ export const PokemonList = (props: PokemonListProps) =>{
                         </div>
                     ) :
                         (
-                            startedTyping ? fileteredPokemon : pokemonList.results)?.slice((currentPage - 1) * maxResults, currentPage * maxResults).map((pokemon, index: number) => (
+                            startedTyping ? fileteredPokemon : pokemonList.results)?.slice((currentPage - 1) * maxResults, currentPage * maxResults).map((pokemon) => (
                         <Card key={pokemon.url.split('/')[6]} pokemon={{name: pokemon.name, id: pokemon.url.split('/')[6]}} />
                     ))
                     

@@ -196,20 +196,31 @@ export const PokemonDetailsPage = (props: PokemonDetailsPageProps) => {
 
         <h3 className="text-2xl font-bold mb-4">Details</h3>
 
-        <DataTable
-          rows={[
-            ["National pokedex number", pokemonDetails?.details.id],
-            ["Height", `${pokemonDetails?.details.height / 10} m` ],
-            ["Weight", `${pokemonDetails?.details?.weight / 10} kg`]
-          ]}
-        />
+        {
+          pokemonDetails ? (
+            <DataTable
+              rows={[
+                ["National pokedex number", pokemonDetails?.details.id],
+                ["Height", `${pokemonDetails?.details.height / 10} m`],
+                ["Weight", `${pokemonDetails?.details?.weight / 10} kg`]
+              ]}
+            />
+          ) : (
+            <div>
+              loading...
+            </div>
+          )
+        }
 
-        <div className="mb-4">
+
+        {
+          pokemonDetails ? (
+                 <div className="mb-4">
           <h3 className="font-semibold">Abilities:</h3>
           <ul>
             {pokemonDetails?.details.abilities.map(a => (
-              <li key={a.ability.name} className="capitalize">
-                <span className='font-bold'>{a.ability.name}</span>
+              <li key={a.ability?.name} className="capitalize">
+                <span className='font-bold'>{a.ability?.name || "unknown" }</span>
 
                 <div className='text-gray-500'>
                   {
@@ -241,6 +252,13 @@ export const PokemonDetailsPage = (props: PokemonDetailsPageProps) => {
             ))}
           </ul>
         </div>
+          ) :
+            (
+              <div>
+                loading...
+                </div>
+            )
+        }
 
         <StatsTable data={(pokemonDetails?.details.stats || []).map((stat) => {
           return {
