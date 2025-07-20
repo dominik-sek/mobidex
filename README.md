@@ -1,10 +1,12 @@
-# GI Pokédex
+# Pokédex
 
 Pokédex web app built with React, Vite, TypeScript, and Tailwind CSS.
 
 ## 🚀 Live Demo
 
-[View the live app here!](https://mobidex.vercel.app/)
+[View the app here](https://pokedex.dominiksek.pl/)
+
+[Or here](https://mobidex.vercel.app/)
 
 ---
 
