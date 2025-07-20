@@ -1,12 +1,17 @@
+import { Link } from 'react-router';
+import type { Pokemon } from '../types/pokemon';
+
 interface CardProps {
     className?: string;
     pokemon: {
         name: string;
         id: string;
     };
+
 }
-import { Link } from 'react-router';
+
 export const Card = (props: CardProps) => {
+
     
     const pokemonImageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${props.pokemon.id}.svg`;
     const pokemonFallbackMissing = `https://raw.githubusercontent.com/PokeAPI/sprites/refs/heads/master/sprites/pokemon/0.png`;

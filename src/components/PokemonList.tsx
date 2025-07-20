@@ -19,7 +19,6 @@ export const PokemonList = () =>{
     const [fileteredPokemon, setFilteredPokemon] = useState<Result[]>([]);
     const [startedTyping, setStartedTyping] = useState(false);
 
-
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
             console.log(fileteredPokemon.length /maxResults)
 
@@ -73,7 +72,7 @@ export const PokemonList = () =>{
     
     return(
         <div className="flex flex-col gap-2 overflow-hidden">
-            <div className='h-16 shrink-0'>
+            <div className='shrink-0'>
                 <Searchbar onChange={handleSearchChange} />
             </div>
 
@@ -84,7 +83,7 @@ export const PokemonList = () =>{
                             No Pokemon found for "{searchQuery}"
                         </div>
                     ) :
-                        (
+                    (
                             startedTyping ? fileteredPokemon : pokemonList.results)?.slice((currentPage - 1) * maxResults, currentPage * maxResults).map((pokemon) => (
                         <Card key={pokemon.url.split('/')[6]} pokemon={{name: pokemon.name, id: pokemon.url.split('/')[6]}} />
                     ))

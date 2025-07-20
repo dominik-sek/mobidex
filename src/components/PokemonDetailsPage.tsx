@@ -7,10 +7,10 @@ import type { PokemonSpecies } from '../types/pokemon-species';
 import type { PokemonEvolutionChain } from '../types/pokemon-evolution-chain';
 import { Blockquote } from './Blockquote';
 import { StatsTable } from './StatsTable';
-import { Card } from './Card';
 import type { Ability } from '../types/ability';
 import { DataTable } from './DataTable';
 import EvolutionChain from './EvolutionChain/EvolutionChain';
+import { calculateMinMaxStatValueAt100 } from '../helpers/calculate-min-max-stat';
 
 
 const statNameMap: Record<string, string> = {
@@ -56,7 +56,6 @@ export const PokemonDetailsPage = (props: PokemonDetailsPageProps) => {
   const [evolutionChain, setEvolutionChain] = useState<PokemonEvolutionChain>();
   const [abilityDetails, setAbilityDetails] = useState<Ability[]>([]);
 
-
   useEffect(() => {
     if (params.id) {
       fetchPokemonDetailsById(params.id)
@@ -97,41 +96,12 @@ export const PokemonDetailsPage = (props: PokemonDetailsPageProps) => {
     }
   }, [pokemonDetails]);
 
-  const calculateMinMaxStatValueAt100 = (statName: string): { min: number; max: number; } => {
-    /*
-    max-EV = 31 stat points
-    max-IV = 63 stat points
-    beneficial nature = +10%
-    negative nature = -10%
 
-    non-HP base stat min-max can be calculated from:
-    min: (2 * stat_value+ 5 (static for non-HP stats) ) * negative nature
-    max: (2 * stat_value + max-EV + max-IV + 5) * beneficial nature
-
-    HP min-max:
-    min: 2 * hp_value + 110 (static for HP)
-    max: 2 * hp_value + 110 + max-EV + max-IV
-*/
-
-    let maxEV = 63; // max EV for a stat
-    let maxIV = 31; // max IV for a stat
-
-    const baseStat = pokemonDetails?.details.stats.find(stat => stat.stat.name === statName)?.base_stat || 0;
-
-    if (statName === 'hp') {
-      return {
-        min: 2 * baseStat + 110,
-        max: 2 * baseStat + 110 + maxEV + maxIV
-      };
-    } else {
-      return {
-        min: Math.floor((2 * baseStat + 5) * 0.9),
-        max: Math.floor(((2 * baseStat) + maxEV + maxIV + 5) * 1.1)
-      };
-    }
-
-  };
-
+  if (!pokemonDetails) {
+    return <div>
+      loading...
+    </div>
+  }else{
   return (
     <Wrapper className='h-auto!'>
       <div className='text-center flex-1'>
@@ -265,7 +235,7 @@ export const PokemonDetailsPage = (props: PokemonDetailsPageProps) => {
           return {
             name: statNameMap[stat.stat.name],
             value: stat.base_stat,
-            minMaxValues: calculateMinMaxStatValueAt100(stat.stat.name)
+            minMaxValues: calculateMinMaxStatValueAt100(stat.stat.name, pokemonDetails.details.stats)
           };
         })} />
 
@@ -276,5 +246,6 @@ export const PokemonDetailsPage = (props: PokemonDetailsPageProps) => {
       }
 
     </Wrapper>
-  );
+    );
+  }
 };
