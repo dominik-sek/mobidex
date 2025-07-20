@@ -1,8 +1,8 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
-    --font-poppins: Poppins, sans-serif;
+	--font-poppins: Poppins, sans-serif;
 }
-:root{
-    @apply bg-slate-300
+:root {
+	@apply bg-slate-300;
 }
