@@ -13,29 +13,36 @@ Pokédex web app built with React, Vite, TypeScript, and Tailwind CSS.
 ## 🛠️ Setup Instructions
 
 ### 1. Clone the repository
+
 ```bash
 git clone https://github.com/dominik-sek/mobidex.git
 cd mobidex
 ```
 
 ### 2. Install dependencies
+
 ```bash
 npm install
 ```
 
 ### 3. Start the development server
+
 ```bash
 npm run dev
 ```
+
 - The app will be available at [http://localhost:5173](http://localhost:5173).
 
 ### 4. Build for production
+
 ```bash
 npm run build
 ```
+
 - The output will be in the `dist/` folder.
 
 ### 5. Preview the production build
+
 ```bash
 npm run preview
 ```
@@ -43,6 +50,7 @@ npm run preview
 ---
 
 ## 🧰 Tech Stack
+
 - [React](https://react.dev/)
 - [Vite](https://vitejs.dev/)
 - [TypeScript](https://www.typescriptlang.org/)
@@ -52,10 +60,11 @@ npm run preview
 - [Prettier](https://prettier.io/)
 
 ---
+
 ## Screenshots
 
-
 ### Desktop
+
 <details>
 <summary>Home page</summary>
 <img width="1862" height="1014" alt="image" src="https://github.com/user-attachments/assets/34c30c2c-7ce6-46e6-8e95-13ef2e42e72e" />
